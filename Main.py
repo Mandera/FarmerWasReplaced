@@ -5,7 +5,7 @@ from builtz.built import *
 # from pumpkin import pumpkins
 # from tree import tree
 from helpers import *
-
+from sunflower import sunflowers
 
 # Wait with this until we have lists and dictionaries
 
@@ -20,8 +20,9 @@ half_size = size / 2
 direction_indexes = [[East, West], [North, South]]
 
 
+clear()
+sunflowers(10)
 
-goto((2, 1))
 
 
 # while True:

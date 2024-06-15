@@ -13,41 +13,38 @@ def store_petals(dict_, x, y, petals):
 
 def sunflowers(laps, setup=True):
     dict_ = {}
-
     buy_items(Items.Sunflower_Seed, squares * laps)
 
     if setup:
-        for x in range(size):
-            y = 0
-            for y in range(size_min_1):
+        clear()
+        x = 0
+        y = 0
+        for i2 in range(size):
+            for i3 in range(size_min_1):
                 till()
                 plant(Entities.Sunflower)
                 use_item(Items.Water_Tank)
                 store_petals(dict_, x, y, measure())
                 move(East)
+                x = (x + 1) % size
             till()
             plant(Entities.Sunflower)
             use_item(Items.Water_Tank)
             store_petals(dict_, x, y, measure())
             move(North)
+            y = (y + 1) % size
 
-    most = None
-    most_x = None
-    most_y = None
+    while dict_:
+        keys = list(dict_)
+        max_petals = max(keys)
+        for coords in dict_[max_petals]:
+            goto(coords)
+            harvest()
+        dict_.pop(max_petals)
 
-    for i in range(laps):
-        for x in range(size):
-            for y in range(size_min_1):
-                measurement = measure()
-                if most == None or measurement > most:
-                    most = measurement
-                    most_x = x
-                    most_y = y
-                move(East)
-            measurement = measure()
-            if most == None or measurement > most:
-                most = measurement
-                most_x = x
-                most_y = y
-            move(North)
-        print(most, most_x, most_y)
+
+
+
+
+
+
