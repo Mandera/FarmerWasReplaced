@@ -20,8 +20,7 @@ half_size = size / 2
 direction_indexes = [[East, West], [North, South]]
 
 
-clear()
-sunflowers(10)
+sunflowers(100)
 
 
 
