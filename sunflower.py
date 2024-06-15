@@ -13,8 +13,11 @@ def store_petals(dict_, x, y, petals):
 
 def sunflowers(laps, setup=True):
     dict_ = {}
-    replants = 100
-    buy_items(Items.Sunflower_Seed, (squares + replants) * laps)
+    replants = 1000
+    water_limit = 0.75
+    plants = (squares + replants) * laps
+    buy_items(Items.Sunflower_Seed, plants)
+    buy_items(Items.Fertilizer, plants)
 
     for i in range(laps):
         x = 0
@@ -24,7 +27,7 @@ def sunflowers(laps, setup=True):
                 if not i:
                     till()
                 plant(Entities.Sunflower)
-                if get_water() < 0.75:
+                while get_water() < water_limit:
                     use_item(Items.Water_Tank)
                 store_petals(dict_, x, y, measure())
                 move(East)
@@ -32,7 +35,7 @@ def sunflowers(laps, setup=True):
             if not i:
                 till()
             plant(Entities.Sunflower)
-            if get_water() < 0.75:
+            while get_water() < water_limit:
                 use_item(Items.Water_Tank)
             store_petals(dict_, x, y, measure())
             move(North)
@@ -50,12 +53,12 @@ def sunflowers(laps, setup=True):
                 goto(coords)
                 if not can_harvest():
                     use_item(Items.Fertilizer)
+                    for i2 in range(4):
+                        use_item(Items.Water_Tank)
                 harvest()
 
                 if n < replants:
                     plant(Entities.Sunflower)
-                    while get_water() < 0.75:
-                        use_item(Items.Water_Tank)
                     petals = measure()
                     store_petals(dict_, x, y, petals)
                     if petals > max_petals:
