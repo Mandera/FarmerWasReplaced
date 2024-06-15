@@ -1,6 +1,3 @@
-from Main import size, size_min_1, squares
-from helpers import buy_items
-from builtz.built import till, move, East, North, Items, Entities, can_harvest, harvest, plant, use_item
 
 
 def carrots(laps, setup=True):
@@ -31,3 +28,6 @@ def carrot_harvest(seed, direction):
     plant(seed)
     use_item(Items.Water_Tank)
     move(direction)
+
+from builtz.built import *
+from Main import *
