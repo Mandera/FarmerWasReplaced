@@ -28,6 +28,8 @@ while True:
     carrots_num = num_items(Items.Carrot)
     pumpkins_num = num_items(Items.Pumpkin)
 
+    # pumpkins_num = 0
+
     min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num)
 
     if min_num == power_num:

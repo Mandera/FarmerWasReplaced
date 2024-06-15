@@ -1,5 +1,6 @@
-from Main import size, diagonals
-from builtz.built import harvest, till, plant, Entities, move, East, North, can_harvest
+
+from Main import *
+from builtz.built import *
 
 
 def do_tree(i, direction):
@@ -8,7 +9,7 @@ def do_tree(i, direction):
     else:
         till()
     plant(Entities.Tree)
-    # use_item(Items.Water_Tank)
+    use_item(Items.Water_Tank)
     move(East)
     move(direction)
 

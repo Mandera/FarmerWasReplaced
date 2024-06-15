@@ -1,40 +1,56 @@
-from Main import squares, size, size_min_1
-from helpers import buy_items
-from builtz.built import get_entity_type, plant, move, Items, till, Entities, East, North, harvest
+
+from Main import *
+from helpers import *
+from builtz.built import *
 
 
-def pumpkin_harvest(seed, direction):
-    planted = False
+def pumpkin_harvest(direction, check_coords):
     if get_entity_type() == None:
-        plant(seed)
-        # use_item(Items.Water_Tank)
-        planted = True
+        plant(Entities.Pumpkin)
+        check_coords.append(get_pos())
     move(direction)
-    return planted
 
 
-def pumpkins(laps, setup=True):
+def pumpkins(laps):
     buy_items(Items.Pumpkin_Seed, squares * laps)
 
-    if setup:
-        for x in range(size):
-            for y in range(size_min_1):
-                till()
+    for i in range(laps):
+        for i2 in range(size):
+            for i3 in range(size_min_1):
+                if not i:
+                    till()
                 plant(Entities.Pumpkin)
-                # use_item(Items.Water_Tank)
                 move(East)
-            till()
+            if not i:
+                till()
             plant(Entities.Pumpkin)
-            # use_item(Items.Water_Tank)
             move(North)
 
-    for i in range(laps):
-        good = True
-        for x in range(size):
-            for i in range(size_min_1):
-                if pumpkin_harvest(Entities.Pumpkin, East):
-                    good = False
-            if pumpkin_harvest(Entities.Pumpkin, North):
-                good = False
-        if good:
-            harvest()
+        do_a_flip()
+        do_a_flip()
+        do_a_flip()
+
+        check_coords = []
+        for i2 in range(size):
+            for i3 in range(size_min_1):
+                pumpkin_harvest(East, check_coords)
+            pumpkin_harvest(North, check_coords)
+
+        for coords in check_coords:
+            goto(coords)
+            while True:
+                if get_entity_type() == None:
+                    plant(Entities.Pumpkin)
+                if not can_harvest():
+                    use_item(Items.Fertilizer)
+                if can_harvest():
+                    break
+
+
+        do_a_flip()
+        do_a_flip()
+        do_a_flip()
+
+        harvest()
+
+

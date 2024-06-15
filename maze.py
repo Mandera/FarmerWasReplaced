@@ -3,21 +3,14 @@
 from builtz.built import *
 
 
-# trade(Items.Fertilizer, 1000)
-
-clear()
-
-plant(Entities.Bush)
-use_item(Items.Water_Tank)
-use_item(Items.Water_Tank)
-use_item(Items.Water_Tank)
 
 
-while not can_harvest():
-    pass
+def maze(laps):
+    for lap in range(laps):
+        clear()
+        plant(Entities.Bush)
+        while get_entity_type() == Entities.Bush:
+            use_item(Items.Fertilizer)
 
-while get_entity_type() == Entities.Bush:
-    use_item(Items.Fertilizer)
-
-
+maze(1)
 
