@@ -2,7 +2,7 @@
 from __builtins__ import *
 
 
-def do_tree(i, dir):
+def do_tree(i, direction):
     if i:
         harvest()
     else:
@@ -10,7 +10,9 @@ def do_tree(i, dir):
     plant(Entities.Tree)
     # use_item(Items.Water_Tank)
     move(East)
-    move(dir)
+    move(direction)
+
+
 
 def tree(laps):
     for i in range(laps):
@@ -64,13 +66,13 @@ def sunflowers(laps, setup=True):
 
 
 
-def pumpkin_harvest(seed, dir):
+def pumpkin_harvest(seed, direction):
     planted = False
     if get_entity_type() == None:
         plant(seed)
-        #use_item(Items.Water_Tank)
+        # use_item(Items.Water_Tank)
         planted = True
-    move(dir)
+    move(direction)
     return planted
 
 def pumpkins(laps, setup=True):
@@ -81,11 +83,11 @@ def pumpkins(laps, setup=True):
             for y in range(size_min_1):
                 till()
                 plant(Entities.Pumpkin)
-                #use_item(Items.Water_Tank)
+                # use_item(Items.Water_Tank)
                 move(East)
             till()
             plant(Entities.Pumpkin)
-            #use_item(Items.Water_Tank)
+            # use_item(Items.Water_Tank)
             move(North)
 
     for i in range(laps):
@@ -107,11 +109,11 @@ def buy_items(item, target):
         trade(item, target - current)
 
 
-def do_harvest(seed, dir):
+def do_harvest(seed, direction):
     harvest()
     plant(seed)
     use_item(Items.Water_Tank)
-    move(dir)
+    move(direction)
 
 def carrots(laps, setup=True):
     if setup:
@@ -125,7 +127,7 @@ def carrots(laps, setup=True):
     buy_items(Items.Carrot_Seed, squares * laps)
     for i in range(laps):
         for x in range(size):
-            for i in range(size_min_1):
+            for y in range(size_min_1):
                 do_harvest(Entities.Carrots, East)
             if x:
                 do_harvest(Entities.Carrots, North)
@@ -177,3 +179,4 @@ while True:
         pumpkins(50)
     else:
         carrots(100)
+

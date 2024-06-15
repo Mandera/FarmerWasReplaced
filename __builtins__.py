@@ -428,7 +428,7 @@ def can_harvest() -> bool:
 
 
 # -------------------------------------------------------------------------------
-def plant(entity: Entities) -> bool:
+def plant(entity: property) -> bool:
     """
     Plants the specified `entity` under the drone if it can be planted.
     Otherwise it just does nothing.
@@ -446,7 +446,7 @@ def plant(entity: Entities) -> bool:
 
 
 # -------------------------------------------------------------------------------
-def move(direction: North | East | South | West) -> None:
+def move(direction: type[North] | type[East] | type[South] | type[West]) -> None:
     """
     Moves the drone into the specified `direction` by one tile.
     If the drone moves over the edge of the farm it wraps back to the other side of the farm.
@@ -541,7 +541,7 @@ def get_pos_y() -> float:
 
 
 # -------------------------------------------------------------------------------
-def get_world_size() -> float:
+def get_world_size() -> int:
     """
     Get the current size of the farm.
 
@@ -661,7 +661,7 @@ def trade(item: Items, n: Optional[float] = None) -> bool:
 
 
 # -------------------------------------------------------------------------------
-def use_item(item: Items) -> bool:
+def use_item(item: property) -> bool:
     """
     Attempts to use the specified `item`. Can only be used with some items including `Items.Water_Tank`, `Items.Fertilizer` and `Items.Egg`.
 
@@ -780,7 +780,7 @@ def set_farm_size(size: float) -> None:
 
 
 # -------------------------------------------------------------------------------
-def num_items(item: Items) -> float:
+def num_items(item: property) -> float:
     """
     Find out how much of `item` you currently have.
 
