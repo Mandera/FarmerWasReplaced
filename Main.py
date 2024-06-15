@@ -1,5 +1,5 @@
 
-# from builtz.built import *
+from builtz.built import *
 # from carrot import carrots
 # from hay import hay
 # from pumpkin import pumpkins
@@ -17,11 +17,11 @@ diagonals = 4
 uneven = size % 2
 half_size = size / 2
 
-direction_indexes = [[West, East], [South, North]]
+direction_indexes = [[East, West], [North, South]]
 
 
 
-# goto((2, 1))
+goto((2, 1))
 
 
 # while True:
