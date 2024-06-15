@@ -1,5 +1,5 @@
 
-from __builtins__ import *
+from builtins import *
 
 
 def do_tree(i, direction):
@@ -13,21 +13,17 @@ def do_tree(i, direction):
     move(direction)
 
 
-
 def tree(laps):
     for i in range(laps):
         for x in range(size):
-            for y in range(diagonals - uneven * (x % 2)):
+            for y in range(diagonals):
                 do_tree(i, East)
             do_tree(i, North)
-            if uneven and x < size - 1:
-                move(East)
         while not can_harvest():
             pass
 
 
 # Wait with this until we have lists and dictionaries
-
 def sunflowers(laps, setup=True):
     if setup:
         for x in range(size):
@@ -163,9 +159,13 @@ squares = size * size
 diagonals = 4
 uneven = size % 2
 
+
 while True:
     clear()
-    
+
+    # tree(100)
+    pumpkins(100)
+
     hay_num = num_items(Items.Hay)
     wood_num = num_items(Items.Wood)
     carrots_num = num_items(Items.Carrot)

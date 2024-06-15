@@ -635,7 +635,7 @@ def get_op_count() -> float:
 
 
 # -------------------------------------------------------------------------------
-def trade(item: Items, n: Optional[float] = None) -> bool:
+def trade(item: property, n: Optional[float] = None) -> bool:
     """
     Tries to buy the specified `item`.
      If the `item` cannot be bought or you don't have the required resources it simply does nothing.
@@ -798,7 +798,7 @@ def num_items(item: property) -> float:
 
 
 # -------------------------------------------------------------------------------
-def get_cost(thing: Entities | Items | Unlocks) -> dict[Items, float] | None:
+def get_cost(thing: property) -> dict[Items, float] | None:
     """
     Gets the cost of a `thing`
 
