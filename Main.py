@@ -1,16 +1,6 @@
 
 from builtz.built import *
-
-
-def do_tree(i, direction):
-    if i:
-        harvest()
-    else:
-        till()
-    plant(Entities.Tree)
-    # use_item(Items.Water_Tank)
-    move(East)
-    move(direction)
+from tree import do_tree
 
 
 def tree(laps):
