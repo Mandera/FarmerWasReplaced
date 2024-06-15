@@ -14,6 +14,9 @@ size_min_1 = size - 1
 squares = size * size
 diagonals = 4
 uneven = size % 2
+half_size = int(size / 2)
+
+direction_indexes = [[East, West], [North, South]]
 
 
 while True:
