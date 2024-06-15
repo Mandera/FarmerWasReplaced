@@ -1,13 +1,12 @@
 
 from builtz.built import *
-# from carrot import carrots
-# from hay import hay
-# from pumpkin import pumpkins
-# from tree import tree
+from carrot import carrots
+from hay import hay
+from pumpkin import pumpkins
+from tree import tree
 from helpers import *
 from sunflower import sunflowers
 
-# Wait with this until we have lists and dictionaries
 
 
 size = get_world_size()
@@ -20,27 +19,25 @@ half_size = size / 2
 direction_indexes = [[East, West], [North, South]]
 
 
-sunflowers(100)
+while True:
+    clear()
 
+    power_num = num_items(Items.Power)
+    hay_num = num_items(Items.Hay)
+    wood_num = num_items(Items.Wood)
+    carrots_num = num_items(Items.Carrot)
+    pumpkins_num = num_items(Items.Pumpkin)
 
+    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num)
 
-# while True:
-#     clear()
-#
-#     # tree(100)
-#     pumpkins(100)
-#
-#     hay_num = num_items(Items.Hay)
-#     wood_num = num_items(Items.Wood)
-#     carrots_num = num_items(Items.Carrot)
-#     pumpkins_num = num_items(Items.Pumpkin)
-#
-#     if hay_num < 1000000:
-#         hay(100)
-#     elif wood_num < 1000000:
-#         tree(100)
-#     elif pumpkins_num < 1000000:
-#         pumpkins(50)
-#     else:
-#         carrots(100)
+    if min_num == power_num:
+        sunflowers(10)
+    elif min_num == hay_num:
+        hay(10)
+    elif min_num == wood_num:
+        tree(10)
+    elif min_num == carrots_num:
+        carrots(10)
+    elif min_num == pumpkins_num:
+        pumpkins(10)
 
