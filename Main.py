@@ -21,7 +21,6 @@ direction_indexes = [[East, West], [North, South]]
 direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
 direction_opposite = {North: South, South: North, East: West, West: East}
 
-maze(1)
 
 
 while True:
@@ -32,10 +31,11 @@ while True:
     wood_num = num_items(Items.Wood)
     carrots_num = num_items(Items.Carrot)
     pumpkins_num = num_items(Items.Pumpkin)
+    gold_num = num_items(Items.Gold)
 
     # pumpkins_num = 0
 
-    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num)
+    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num)
 
     if min_num == power_num:
         sunflowers(10)
@@ -47,4 +47,6 @@ while True:
         carrots(10)
     elif min_num == pumpkins_num:
         pumpkins(10)
+    elif min_num == gold_num:
+        maze(10)
 

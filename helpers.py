@@ -13,7 +13,7 @@ def buy_items(item, target):
         trade(item, target - current)
 
 def get_pos():
-    return get_pos_x(), get_pos_y()
+    return [get_pos_x(), get_pos_y()]
 
 
 
