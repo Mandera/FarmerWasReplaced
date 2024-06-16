@@ -446,7 +446,7 @@ def plant(entity: property) -> bool:
 
 
 # -------------------------------------------------------------------------------
-def move(direction: type[North] | type[East] | type[South] | type[West]) -> None:
+def move(direction: type[North] | type[East] | type[South] | type[West]) -> bool:
     """
     Moves the drone into the specified `direction` by one tile.
     If the drone moves over the edge of the farm it wraps back to the other side of the farm.

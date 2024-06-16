@@ -1,5 +1,4 @@
 
-from builtz.built import *
 from Main import *
 
 
@@ -15,6 +14,9 @@ def buy_items(item, target):
 
 def get_pos():
     return get_pos_x(), get_pos_y()
+
+
+
 
 def move_instructions(n1, n2):
     diff = n2 - n1

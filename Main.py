@@ -1,11 +1,12 @@
 
-from builtz.built import *
 from carrot import carrots
 from hay import hay
+from maze import maze
 from pumpkin import pumpkins
 from tree import tree
 from helpers import *
 from sunflower import sunflowers
+from builtz.built import *
 
 
 
@@ -17,6 +18,10 @@ uneven = size % 2
 half_size = size / 2
 
 direction_indexes = [[East, West], [North, South]]
+direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
+direction_opposite = {North: South, South: North, East: West, West: East}
+
+maze(1)
 
 
 while True:
