@@ -22,6 +22,10 @@ direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
 direction_opposite = {North: South, South: North, East: West, West: East}
 
 
+WALL = 1
+WALL_INVIS = 2
+OPEN = 3
+
 
 while True:
     clear()
