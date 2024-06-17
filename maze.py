@@ -17,110 +17,120 @@ def blank_grid():
             grid[x][y] = {}
     return grid
 
+def get_grid_pos(grid, pos):
+    if pos:
+        x, y = pos
+        return grid[x][y]
 
-def update_pos(pos, dir_):
-    numbers = direction_numbers[dir_]
-    pos[numbers[0]] = (pos[numbers[0]] + numbers[1]) % size
+def measure_pos():
+    x, y = measure()
+    return [x, y]
+
+def check_treasure():
+    do_measure = True
+    while get_entity_type() == Entities.Treasure:
+        if glob["teleport_i"] == glob["teleports"]:
+            harvest()
+            return True
+
+        if do_measure:
+            glob["treasure_pos"] = measure_pos()
+            glob["treasure_grid_pos"] = get_grid_pos(glob["grid"], glob["treasure_pos"])
+
+            if glob["treasure_pos"] != glob["pos"]:
+                glob["teleport_i"] += 1
+                do_measure = False
+                # set_execution_speed(0.5)
+        use_item(Items.Fertilizer)
+
+def tracked_move(dir_):
+    result = move(dir_)
+    if result:
+        i, value = direction_numbers[dir_]
+        glob["pos"][i] = (glob["pos"][i] + value) % size
+        glob["grid_pos"] = get_grid_pos(glob["grid"], glob["pos"])
+    return result
+
+def try_move_dir(dir_):
+    # Already tried going through here, see if we should skip
+    if dir_ in glob["grid_pos"]:
+        wall, wall_i = glob["grid_pos"][dir_]
+
+        # Always skip wall
+        if wall == WALL:
+            return False
+
+        # If wall info is from this iteration
+        if wall_i == glob["teleport_i"]:
+            # Skip if open unless back tracking
+            if wall == OPEN and not glob["back_track"]:
+                return False
+
+            # Skip invisible wall (From back tracking)
+            if wall == WALL_INVIS:
+                return False
+
+    prev_grid_pos = glob["grid_pos"]
+
+    # Successfully moved
+    if tracked_move(dir_):
+        prev_grid_pos[dir_] = [OPEN, glob["teleport_i"]]
+        if glob["back_track"]:
+            # Close off behind temporarily
+            glob["grid_pos"][direction_opposite[dir_]] = [WALL_INVIS, glob["teleport_i"]]
+        else:
+            # Mark open behind
+            glob["grid_pos"][direction_opposite[dir_]] = [OPEN, glob["teleport_i"]]
+
+        glob["back_track"] = False
+        return True
+
+    # There's a wall
+    else:
+        glob["grid_pos"][dir_] = [WALL, glob["teleport_i"]]
+
+def make_move():
+    for dir_i in range(2):
+        directions = direction_indexes[dir_i]
+        for dir_ in directions:
+            if try_move_dir(dir_):
+                return True
+    # Dead-end, enable back track
+    glob["back_track"] = True
 
 
 
 # Bug: If a wall disappears in unsearched squares it can get stuck
 def maze(laps):
     for lap in range(laps):
-        pos = get_pos()
-
-        grid = blank_grid()
+        glob["pos"] = get_pos()
+        glob["grid"] = blank_grid()
+        glob["grid_pos"] = get_grid_pos(glob["grid"], glob["pos"])
+        glob["teleports"] = 2  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
+        glob["teleport_i"] = 0
+        glob["back_track"] = False
+        glob["treasure_pos"] = None
 
         start_maze()
-        back_track = False
-        treasure_pos = None
-        treasure_grid_pos = None
-
-        # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
-        teleports = 2
-        teleport_i = 0
 
         while True:
-            do_measure = True
-            while get_entity_type() == Entities.Treasure:
-                if teleport_i == teleports:
-                    harvest()
-                    break
-
-                if do_measure:
-                    x, y = measure()
-                    treasure_pos = [x, y]
-                    treasure_grid_pos = grid[x][y]
-                    if treasure_pos != pos:
-                        teleport_i += 1
-                        print(teleport_i)
-                        do_measure = False
-
-                        # set_execution_speed(0.5)
-
-                use_item(Items.Fertilizer)
-
-            if teleport_i == teleports:
+            if check_treasure():
+                # Chest was harvested
                 break
 
-            if treasure_pos and treasure_grid_pos and False:
-                print(treasure_pos)
-                print(treasure_grid_pos)
+            if not glob["treasure_pos"]:
+                quick_print("treasure not found")
+                make_move()
+
+            elif not glob["treasure_grid_pos"]:
+                quick_print("treasure found but square not discovered")
+                make_move()
 
             else:
-                # Move one step
+                quick_print("treasure found and discovered")
 
-                do_next_square = False
 
-                for dir_i in range(2):
-                    directions = direction_indexes[dir_i]
-                    for dir_ in directions:
-                        grid_pos = grid[pos[0]][pos[1]]
 
-                        # Already tried going through here, see if we should skip
-                        if dir_ in grid_pos:
-                            wall, wall_i = grid_pos[dir_]
-
-                            # Always skip wall
-                            if wall == WALL:
-                                continue
-
-                            # If info is from this iteration
-                            if wall_i == teleport_i:
-                                # Skip if open unless back tracking
-                                if wall == OPEN and not back_track:
-                                    continue
-
-                                # Skip invisible wall (From back tracking)
-                                if wall == WALL_INVIS:
-                                    continue
-
-                        result = move(dir_)
-                        if result:
-                            grid_pos[dir_] = [OPEN, teleport_i]
-                        else:
-                            grid_pos[dir_] = [WALL, teleport_i]
-
-                        # If moved
-                        if result:
-                            update_pos(pos, dir_)
-                            grid_pos = grid[pos[0]][pos[1]]
-                            if back_track:
-                                # Close off behind
-                                grid_pos[direction_opposite[dir_]] = [WALL_INVIS, teleport_i]
-                            else:
-                                # Mark open behind
-                                grid_pos[direction_opposite[dir_]] = [OPEN, teleport_i]
-
-                            back_track = False
-                            do_next_square = True
-                            break
-                    if do_next_square:
-                        break
-
-                # Dead-end, back track and close it off
-                if not do_next_square:
-                    back_track = True
 
 
 

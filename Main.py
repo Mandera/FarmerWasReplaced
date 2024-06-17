@@ -26,6 +26,8 @@ WALL = 1
 WALL_INVIS = 2
 OPEN = 3
 
+glob = {}
+
 
 while True:
     clear()
