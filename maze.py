@@ -41,6 +41,10 @@ def check_treasure():
                 glob["teleport_i"] += 1
                 do_measure = False
                 # set_execution_speed(0.5)
+
+                # HERE ** Force edge case
+                glob["grid"] = blank_grid()
+                glob["grid_pos"] = get_grid_pos(glob["grid"], glob["pos"])
         use_item(Items.Fertilizer)
 
 def tracked_move(dir_):
@@ -98,15 +102,13 @@ def make_move():
     # Dead-end, enable back track
     glob["back_track"] = True
 
-
-
 # Bug: If a wall disappears in unsearched squares it can get stuck
 def maze(laps):
     for lap in range(laps):
         glob["pos"] = get_pos()
         glob["grid"] = blank_grid()
         glob["grid_pos"] = get_grid_pos(glob["grid"], glob["pos"])
-        glob["teleports"] = 2  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
+        glob["teleports"] = 100  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
         glob["back_track"] = False
         glob["treasure_pos"] = None
@@ -118,16 +120,18 @@ def maze(laps):
                 # Chest was harvested
                 break
 
-            if not glob["treasure_pos"]:
-                quick_print("treasure not found")
-                make_move()
+            make_move()
 
-            elif not glob["treasure_grid_pos"]:
-                quick_print("treasure found but square not discovered")
-                make_move()
-
-            else:
-                quick_print("treasure found and discovered")
+            # if not glob["treasure_pos"]:
+            #     make_move()
+            #
+            # elif not glob["treasure_grid_pos"]:
+            #     make_move()
+            #
+            # else:
+            #     quick_print("treasure found and discovered")
+            #     while True:
+            #         do_a_flip()
 
 
 
