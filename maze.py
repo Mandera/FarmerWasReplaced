@@ -7,49 +7,29 @@ from Main import *
 # 0 == False
 # 1 == True
 
+# Squares:
+# None if unvisited
+# True if visited
+
+# Walls
+# None if untested
+# OPEN if open
+# teleport_i if wall
+
 
 def start_maze():
     plant(Entities.Bush)
     while get_entity_type() == Entities.Bush:
         use_item(Items.Fertilizer)
 
-def to_str(n):
-    return num_to_str[n]
-
-def pos_to_string(pos):
-    return to_str(pos[0]) + "," + to_str(pos[1])
-
-
-def string_to_pos(string):
-    print(string.find(","))
-    return [string[0:2], string[2]]
-
-print(string_to_pos("5,1"))
-
 def pos_key_wall(pos, dir_=None):
-    # h1,3 or v6,2
+    # ("h", 1, 3) or ("v", 6, 2)
     if dir_ in direction_wall_offset:
         pos = list(pos)
         i, value = direction_wall_offset[dir_]
         pos[i] += value
-    return direction_prefix[dir_] + pos_to_string(pos)
+    return direction_prefix[dir_] + (pos[0], pos[1])
 
-
-# None if unvisited
-# True if visited
-def get_square(pos):
-    key = pos_to_string(pos)
-    if key in glob["squares"]:
-        return glob["squares"]
-
-def set_square(pos, value):
-    key = pos_to_string(pos)
-    glob["squares"][key] = value
-
-
-# None if untested
-# OPEN if open
-# teleport_i if wall
 def get_wall(pos, dir_):
     key = pos_key_wall(pos, dir_)
     if key in glob["walls"]:
@@ -59,9 +39,16 @@ def set_wall(pos, dir_, value):
     key = pos_key_wall(pos, dir_)
     glob["walls"][key] = value
 
+def get_square(pos):
+    if pos in glob["squares"]:
+        return glob["squares"][pos]
+
+def set_square(pos, value):
+    glob["squares"][pos] = value
+
 def measure_pos():
     x, y = measure()
-    return [x, y]
+    return x, y
 
 def check_treasure():
     do_measure = True
@@ -76,35 +63,30 @@ def check_treasure():
             if glob["treasure_pos"] != glob["pos"]:
                 glob["teleport_i"] += 1
                 do_measure = False
-
-                # set_execution_speed(0.5)
-                # HERE ** Force edge case
-                # glob["grid"] = blank_grid()
-                # glob["grid_pos"] = get_grid_pos(glob["grid"], glob["pos"])
+                # HERE ** Force edge case if we want by resetting squares and walls
+                # reset_grid()
         use_item(Items.Fertilizer)
-
-
-# Updates clamped pos
-def update_pos_contain(pos, dir_):
-    i, value = direction_numbers[dir_]
-    pos[i] = (pos[i] + value) % size
-
-# Updates unclamped pos
-def update_pos(pos, dir_):
-    i, value = direction_numbers[dir_]
-    pos[i] = (pos[i] + value)
 
 # Return new unclamped pos
 def new_pos(pos, dir_):
     i, value = direction_numbers[dir_]
     pos2 = list(pos)
     pos2[i] = pos2[i] + value
-    return pos2
+    return pos2[0], pos2[1]
+
+# Return new clamped pos
+def new_pos_contain(pos, dir_):
+    i, value = direction_numbers[dir_]
+    pos2 = list(pos)
+    pos2[i] = (pos2[i] + value) % size
+    return pos2[0], pos2[1]
+
+
 
 def tracked_move(dir_):
     result = move(dir_)
     if result:
-        update_pos_contain(glob["pos"], dir_)
+        glob["pos"] = new_pos_contain(glob["pos"], dir_)
     return result
 
 def try_move_dir(dir_):
@@ -123,7 +105,7 @@ def try_move_dir(dir_):
     # Successfully moved
     if move(dir_):
         set_wall(glob["pos"], dir_, OPEN)
-        update_pos(glob["pos"], dir_)
+        glob["pos"] = new_pos(glob["pos"], dir_)
         set_square(glob["pos"], True)
         return True
 
@@ -159,13 +141,17 @@ def closest_unexplored_square():
         if not square_is_explored(square):
             return square
 
+def reset_grid():
+    glob["pos"] = get_pos()
+    glob["squares"] = {}
+    glob["walls"] = {}
+    glob["squares"][glob["pos"]] = True
+
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
     for lap in range(laps):
-        glob["pos"] = get_pos()
-        glob["squares"] = {}
-        glob["walls"] = {}
-        set_square(glob["pos"], True)
+        reset_grid()
+
         glob["teleports"] = 100  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
         glob["back_track"] = False
@@ -177,6 +163,7 @@ def maze(laps):
             if check_treasure():
                 # Chest was harvested
                 break
+
 
             if glob["treasure_pos"] and get_square(glob["treasure_pos"]):
                 pathfind(glob["treasure_pos"])

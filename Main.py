@@ -21,7 +21,7 @@ all_directions = [North, East, South, West]  # No particular order
 direction_indexes = [[East, West], [North, South]]
 direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
 direction_opposite = {North: South, South: North, East: West, West: East}
-direction_prefix = {North: "h", South: "h", East: "v", West: "v"}
+direction_prefix = {North: ("h", ), South: ("h", ), East: ("v", ), West: ("v", )}
 direction_wall_offset = {North: [1, 1], East: [0, 1]}
 num_to_str = {-1: "-1", 0: "0", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10"}
 
