@@ -13,6 +13,14 @@ def start_maze():
     while get_entity_type() == Entities.Bush:
         use_item(Items.Fertilizer)
 
+def reset_walls():
+    glob["walls"] = {}
+    for i in range(2):
+        y = i * size
+        for i2 in range(size):
+            glob["walls"][("h", i2, y)] = OUTSIDE_WALL
+            glob["walls"][("v", y, i2)] = OUTSIDE_WALL
+
 def pos_key_wall(pos, dir_=None):
     # ("h", 1, 3) or ("v", 6, 2)
     if dir_ in direction_wall_offset:
@@ -23,6 +31,7 @@ def pos_key_wall(pos, dir_=None):
 
 # None if untested
 # OPEN if open
+# OUTSIDE_WALL if outside wall
 # teleport_i if wall
 def get_wall(pos, dir_):
     key = pos_key_wall(pos, dir_)
@@ -89,6 +98,8 @@ def should_explore_dir_check(dir_):
         return True  # Try unexplored
     if wall == OPEN:
         return False  # Already know it's open
+
+    # WALL or OUTSIDE_WALL
     return False
 
 def try_explore_dir(dir_):
@@ -104,7 +115,6 @@ def try_explore_dir(dir_):
 
 # Used when target has not been explored yet
 # Goal is to touch untouched squares
-# Todo: Ensure it choses the closest one, perhaps use part of the pathfinding code
 def explore_one_square():
     for dir_i in range(2):
         directions = direction_indexes[dir_i]
@@ -117,9 +127,10 @@ def open_squares(pos):
     squares_and_dir = []
     for dir_ in all_directions:
         wall = get_wall(pos, dir_)
-        if wall == OPEN:
-            target_square = get_pos_dir(pos, dir_)
-            squares_and_dir.append((target_square, dir_))
+        if wall != OPEN:
+            continue
+        target_square = get_pos_dir(pos, dir_)
+        squares_and_dir.append((target_square, dir_))
     return squares_and_dir
 
 
@@ -170,22 +181,29 @@ def square_is_explored(pos):
             return False
     return True
 
+# Todo: Ensure it choses the closest one, perhaps use part of the pathfinding code
 def closest_unexplored_square():
     for square in glob["squares"]:
         if not square_is_explored(square):
             return square
 
+
 def reset_grid():
     glob["pos"] = get_pos()
     glob["squares"] = {}
-    glob["walls"] = {}
     glob["squares"][glob["pos"]] = True
+    reset_walls()
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
     for lap in range(laps):
         start_ops = get_op_count()
         reset_grid()
+
+        # Optimizing 10 teleports (random seed so will naturally vary tho)
+        # 2216439 - Start
+        # 869516 - Pre-generate outside walls - 155% faster
+
 
         glob["teleports"] = 10  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0

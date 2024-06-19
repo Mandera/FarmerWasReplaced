@@ -27,7 +27,7 @@ num_to_str = {-1: "-1", 0: "0", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 
 
 WALL = "wall"
 OPEN = "open"
-# WALL_INVIS = 2
+OUTSIDE_WALL = "OUTSIDE_WALL"
 
 glob = {}
 
