@@ -17,6 +17,7 @@ diagonals = 4
 uneven = size % 2
 half_size = size / 2
 
+all_directions = [North, East, South, West]  # No particular order
 direction_indexes = [[East, West], [North, South]]
 direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
 direction_opposite = {North: South, South: North, East: West, West: East}

@@ -3,33 +3,28 @@
 from Main import *
 
 
-def start_maze():
-    plant(Entities.Bush)
-    while get_entity_type() == Entities.Bush:
-        use_item(Items.Fertilizer)
-
-
-def blank_grid():
-    grid = {}
-    # grid = {"squares": {}, "h_wall": {}, "v_wall": {}}
-
-    # for x in range(size):
-    #     grid[x] = {}
-    #     for y in range(size):
-    #         grid[x][y] = {}
-    return grid
-
-
 # This will be True, avoid it
 # 0 == False
 # 1 == True
 
 
+def start_maze():
+    plant(Entities.Bush)
+    while get_entity_type() == Entities.Bush:
+        use_item(Items.Fertilizer)
+
 def to_str(n):
     return num_to_str[n]
 
-def pos_key(pos):
+def pos_to_string(pos):
     return to_str(pos[0]) + "," + to_str(pos[1])
+
+
+def string_to_pos(string):
+    print(string.find(","))
+    return [string[0:2], string[2]]
+
+print(string_to_pos("5,1"))
 
 def pos_key_wall(pos, dir_=None):
     # h1,3 or v6,2
@@ -37,19 +32,19 @@ def pos_key_wall(pos, dir_=None):
         pos = list(pos)
         i, value = direction_wall_offset[dir_]
         pos[i] += value
-    return direction_prefix[dir_] + pos_key(pos)
+    return direction_prefix[dir_] + pos_to_string(pos)
 
 
 # None if unvisited
 # True if visited
 def get_square(pos):
-    key = pos_key(pos)
-    if key in glob["grid"]:
-        return glob["grid"]
+    key = pos_to_string(pos)
+    if key in glob["squares"]:
+        return glob["squares"]
 
 def set_square(pos, value):
-    key = pos_key(pos)
-    glob["grid"][key] = value
+    key = pos_to_string(pos)
+    glob["squares"][key] = value
 
 
 # None if untested
@@ -57,13 +52,12 @@ def set_square(pos, value):
 # teleport_i if wall
 def get_wall(pos, dir_):
     key = pos_key_wall(pos, dir_)
-    if key in glob["grid"]:
-        return glob["grid"]
+    if key in glob["walls"]:
+        return glob["walls"][key]
 
 def set_wall(pos, dir_, value):
     key = pos_key_wall(pos, dir_)
-    glob["grid"][key] = value
-
+    glob["walls"][key] = value
 
 def measure_pos():
     x, y = measure()
@@ -90,9 +84,6 @@ def check_treasure():
         use_item(Items.Fertilizer)
 
 
-# def unexplored_positions():
-
-
 # Updates clamped pos
 def update_pos_contain(pos, dir_):
     i, value = direction_numbers[dir_]
@@ -115,8 +106,6 @@ def tracked_move(dir_):
     if result:
         update_pos_contain(glob["pos"], dir_)
     return result
-
-
 
 def try_move_dir(dir_):
     # Already tried going through here, see if we should skip
@@ -143,10 +132,9 @@ def try_move_dir(dir_):
     return False
 
 
-
 # Used when target has not been explored yet
-# Goal is to touch more squares
-def explore():
+# Goal is to touch untouched squares
+def explore_one_square():
     for dir_i in range(2):
         directions = direction_indexes[dir_i]
         for dir_ in directions:
@@ -155,17 +143,28 @@ def explore():
     # Dead-end, enable back track
     # glob["back_track"] = True
 
+def pathfind(pos):
+    print("pathfind", pos)
+    do_a_flip()
+    pass
 
-# def pathfind():
-#
+def square_is_explored(pos):
+    for dir_ in all_directions:
+        if get_wall(pos, dir_) == None:
+            return False
+    return True
 
-
+def closest_unexplored_square():
+    for square in glob["squares"]:
+        if not square_is_explored(square):
+            return square
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
     for lap in range(laps):
         glob["pos"] = get_pos()
-        glob["grid"] = blank_grid()
+        glob["squares"] = {}
+        glob["walls"] = {}
         set_square(glob["pos"], True)
         glob["teleports"] = 100  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
@@ -179,7 +178,11 @@ def maze(laps):
                 # Chest was harvested
                 break
 
-            explore()
+            if glob["treasure_pos"] and get_square(glob["treasure_pos"]):
+                pathfind(glob["treasure_pos"])
+
+            if not explore_one_square():
+                pathfind(closest_unexplored_square())
 
             # make_move()
 
