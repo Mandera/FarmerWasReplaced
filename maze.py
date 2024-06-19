@@ -43,7 +43,8 @@ def set_wall(pos, dir_, value):
     glob["walls"][key] = value
 
 # None if unvisited
-# True if visited
+# False if visited but not fully explored
+# True if explored
 def get_square(pos):
     if pos in glob["squares"]:
         return glob["squares"][pos]
@@ -69,7 +70,7 @@ def check_treasure():
                 glob["teleport_i"] += 1
                 do_measure = False
                 # HERE ** Force edge case if we want by resetting squares and walls
-                reset_grid()
+                # reset_grid()
         use_item(Items.Fertilizer)
 
 # Return new unclamped pos
@@ -107,7 +108,7 @@ def try_explore_dir(dir_):
         if move(dir_):
             set_wall(glob["pos"], dir_, OPEN)
             glob["pos"] = get_pos_dir(glob["pos"], dir_)
-            set_square(glob["pos"], True)
+            set_square(glob["pos"], square_is_fully_explored(glob["pos"]))
             return True
         else:
             set_wall(glob["pos"], dir_, glob["teleport_i"])
@@ -115,15 +116,18 @@ def try_explore_dir(dir_):
 
 # Used when target has not been explored yet
 # Goal is to touch untouched squares
+# True if moved
 def explore_one_square():
-    for dir_i in range(2):
-        directions = direction_indexes[dir_i]
-        for dir_ in directions:
-            if try_explore_dir(dir_):
-                return True
+    for dir_ in all_directions:
+        # Fully explored
+        if dir_ == last_dir:
+            set_square(glob["pos"], True)
+
+        if try_explore_dir(dir_):
+            return True
 
 # Return a list of squares and dirs_ that we know are open to the given pos
-def open_squares(pos):
+def open_squares_explored(pos):
     squares_and_dir = []
     for dir_ in all_directions:
         wall = get_wall(pos, dir_)
@@ -135,8 +139,7 @@ def open_squares(pos):
 
 
 # pathfind in memory, returns dict of directions
-# For every found square, we put the reversed direction on it
-
+# For every found square, we put the reversed direction on it, and because of that we start from to_pos
 def pathfind_directions(from_pos, to_pos):
     square_directions = {to_pos: None}
     next_round_squares = set()
@@ -148,7 +151,7 @@ def pathfind_directions(from_pos, to_pos):
 
         next_round_squares = set()
         for check_square in check_squares:
-            for values in open_squares(check_square):
+            for values in open_squares_explored(check_square):
                 new_square, dir_ = values
                 if check_square == new_square:
                     continue
@@ -175,23 +178,44 @@ def pathfind(to_pos):
         pos = get_pos_dir(pos, dir_)
     glob["pos"] = pos
 
-def square_is_explored(pos):
+def square_is_fully_explored(pos):
     for dir_ in all_directions:
         if get_wall(pos, dir_) == None:
             return False
     return True
 
-# Todo: Ensure it choses the closest one, perhaps use part of the pathfinding code
 def closest_unexplored_square():
-    for square in glob["squares"]:
-        if not square_is_explored(square):
-            return square
+    checked_squares = {glob["pos"]}
+    check_squares = checked_squares
+    while True:
+        next_round_squares = set()
+
+        for check_square in check_squares:
+
+            # Get squares and dirs_ that we know are open to the given pos
+            for values in open_squares_explored(check_square):
+                new_square, dir_ = values
+
+                if check_square == new_square:
+                    continue
+
+                # Already checked
+                if new_square in checked_squares:
+                    continue
+
+                if get_square(new_square) == False:  # Not fully explored
+                    return new_square
+
+                checked_squares.add(new_square)
+                next_round_squares.add(new_square)
+        check_squares = next_round_squares
+
 
 
 def reset_grid():
     glob["pos"] = get_pos()
     glob["squares"] = {}
-    glob["squares"][glob["pos"]] = True
+    glob["squares"][glob["pos"]] = False
     reset_walls()
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
@@ -201,9 +225,11 @@ def maze(laps):
         reset_grid()
 
         # Optimizing 10 teleports (random seed so will naturally vary tho)
-        # 2216439 - Start
-        # 869516 - Pre-generate outside walls - 155% faster
-
+        # 2216439                   Start
+        # 869516    155% faster     Pre-generate outside walls
+        # 441558    97% faster      Pathfind to closest unexplored
+        # 290644    52% faster      Disabled grid reset after every teleport which was forgotten when I was debugging edge case
+        # 238163    22% faster      Disabled unnecessary check for if current pos was unexplored, it will never be
 
         glob["teleports"] = 10  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
@@ -219,7 +245,7 @@ def maze(laps):
                 break
 
             # We can pathfind directly to treasure
-            if glob["treasure_pos"] and get_square(glob["treasure_pos"]):
+            if glob["treasure_pos"] and get_square(glob["treasure_pos"]) != None:
                 pathfind(glob["treasure_pos"])
 
             # Keep exploring
