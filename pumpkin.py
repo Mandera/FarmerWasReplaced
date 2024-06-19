@@ -12,7 +12,7 @@ def pumpkin_harvest(direction, check_coords):
 
 
 def pumpkins(laps):
-    buy_items(Items.Pumpkin_Seed, squares * laps)
+    buy_items(Items.Pumpkin_Seed, squares_n * laps)
 
     for i in range(laps):
         for i2 in range(size):

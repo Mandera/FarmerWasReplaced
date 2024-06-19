@@ -12,7 +12,7 @@ from builtz.built import *
 
 size = get_world_size()
 size_min_1 = size - 1
-squares = size * size
+squares_n = size * size
 diagonals = 4
 uneven = size % 2
 half_size = size / 2
@@ -20,11 +20,13 @@ half_size = size / 2
 direction_indexes = [[East, West], [North, South]]
 direction_numbers = {East: [0, 1], West: [0, -1], North: [1, 1], South: [1, -1]}
 direction_opposite = {North: South, South: North, East: West, West: East}
+direction_prefix = {North: "h", South: "h", East: "v", West: "v"}
+direction_wall_offset = {North: [1, 1], East: [0, 1]}
+num_to_str = {-1: "-1", 0: "0", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10"}
 
-
-WALL = 1
-WALL_INVIS = 2
-OPEN = 3
+WALL = "wall"
+OPEN = "open"
+# WALL_INVIS = 2
 
 glob = {}
 

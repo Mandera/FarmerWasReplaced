@@ -9,7 +9,7 @@ def carrots(laps, setup=True):
             till()
             move(North)
 
-    buy_items(Items.Carrot_Seed, squares * laps)
+    buy_items(Items.Carrot_Seed, squares_n * laps)
     for i in range(laps):
         for x in range(size):
             for y in range(size_min_1):

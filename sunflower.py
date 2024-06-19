@@ -15,7 +15,7 @@ def sunflowers(laps, setup=True):
     dict_ = {}
     replants = 1000
     water_limit = 0.75
-    plants = (squares + replants) * laps
+    plants = (squares_n + replants) * laps
     buy_items(Items.Sunflower_Seed, plants)
     buy_items(Items.Fertilizer, plants)
 
