@@ -42,8 +42,6 @@ while True:
     pumpkins_num = num_items(Items.Pumpkin)
     gold_num = num_items(Items.Gold)
 
-    # pumpkins_num = 0
-
     min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num)
 
     if min_num == power_num:

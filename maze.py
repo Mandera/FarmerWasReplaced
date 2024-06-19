@@ -184,9 +184,10 @@ def reset_grid():
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
     for lap in range(laps):
+        start_ops = get_op_count()
         reset_grid()
 
-        glob["teleports"] = 100  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
+        glob["teleports"] = 10  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
         glob["back_track"] = False
         glob["treasure_pos"] = None
@@ -196,6 +197,7 @@ def maze(laps):
         while True:
             harvested_treasure = check_treasure()
             if harvested_treasure:
+                print("ops", get_op_count() - start_ops)
                 break
 
             # We can pathfind directly to treasure
