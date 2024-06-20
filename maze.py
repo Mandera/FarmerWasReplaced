@@ -226,6 +226,8 @@ def reset_grid():
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
+    buy_items(Items.Fertilizer, 1000)
+
     for lap in range(laps):
         reset_grid()
 
