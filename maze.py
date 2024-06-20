@@ -32,7 +32,7 @@ def pos_key_wall(pos, dir_=None):
 # None if untested
 # OPEN if open
 # OUTSIDE_WALL if outside wall
-# teleport_i if wall
+# teleport_i if wall (check with >= 0)
 def get_wall(pos, dir_):
     key = pos_key_wall(pos, dir_)
     if key in glob["walls"]:
@@ -65,8 +65,8 @@ def measure_pos():
 
 def fertilize_or_harvest_treasure():
     if glob["teleport_i"] == glob["teleports"]:
-        harvest()
         print("ops", get_op_count() - glob["start_ops"])
+        harvest()
         return True
 
     treasure_pos = measure_pos()
@@ -92,24 +92,75 @@ def get_pos_dir(pos, dir_):
     pos2[i] = pos2[i] + value
     return pos2[0], pos2[1]
 
-
 def should_explore_dir_check(dir_):
     wall = get_wall(glob["pos"], dir_)
     if wall == None:
         return True  # Try unexplored
     if wall == OPEN:
         return False  # Already know it's open
-    return False  # WALL or OUTSIDE_WALL
+    return False  # index (wall) or OUTSIDE_WALL
 
 def try_explore_dir(pos, dir_):
-    if not should_explore_dir_check(dir_):
-        return False
+    new_pos = get_pos_dir(pos, dir_)  # Regardless if moved or not we have the potential new pos
     moved = move(dir_)
     if moved:
         set_wall(pos, dir_, OPEN)
+        set_square(new_pos, False)  # It's possible that the new pos is now fully explored but disregard that
+        glob["pos"] = new_pos
     else:
-        set_wall(pos, dir_, glob["teleport_i"])
-    return moved
+        i = glob["teleport_i"]
+        set_wall(pos, dir_, i)
+
+        i2 = TELEPORTS_UNTIL_RECHECK_WALL + i
+        glob["squares_with_walls"][pos] = i2
+        glob["squares_with_walls"][new_pos] = i2
+    return moved, new_pos
+
+
+def square_has_wall(pos):
+    for dir_ in all_directions:
+        wall = get_wall(pos, dir_)
+        if wall != OPEN and wall != OUTSIDE_WALL:
+            return True
+
+# Physically check all walls surrounding a square
+def check_old_walls(cur_pos):
+    i = glob["teleport_i"]
+    if cur_pos not in glob["squares_with_walls"] or glob["squares_with_walls"][cur_pos] > i:
+        return False
+
+    walls_gone = False
+
+    for dir_ in all_directions:
+        wall = get_wall(cur_pos, dir_)
+        if wall != OPEN and wall != OUTSIDE_WALL:
+            if move(dir_):
+                # quick_print("found deleted wall!", cur_pos, dir_)
+
+                new_pos = get_pos_dir(cur_pos, dir_)
+                move(direction_opposite[dir_])
+                if get_square(new_pos) == None:
+                    set_square(new_pos, False)
+                set_wall(cur_pos, dir_, OPEN)
+
+                # quick_print("there are now", len(glob["squares_with_walls"]), "squares with walls")
+
+                if new_pos in glob["squares_with_walls"] and not square_has_wall(new_pos):
+                    glob["squares_with_walls"].pop(new_pos)
+
+                if not square_has_wall(cur_pos):
+                    glob["squares_with_walls"].pop(cur_pos)
+                    walls_gone = True
+                    break
+            else:
+                set_wall(cur_pos, dir_, i)
+
+    # 4627240 without this
+    # 4571124 with
+    # 5166720 turned off print, oh, big variance
+    # 5010265 = 20
+    if not walls_gone:
+        glob["squares_with_walls"][cur_pos] = i
 
 
 # Used when target has not been explored yet
@@ -119,8 +170,10 @@ def explore_one_square():
     moved = False
     start_pos = glob["pos"]
     for dir_ in all_directions:
-        if try_explore_dir(start_pos, dir_):
-            moved = True
+        if not should_explore_dir_check(dir_):
+            continue
+        moved, new_pos = try_explore_dir(start_pos, dir_)
+        if moved:
             break
 
     if dir_ == last_dir:  # Fully explored
@@ -128,16 +181,9 @@ def explore_one_square():
     else:
         set_square(start_pos, False)
 
-    if moved:
-        new_pos = get_pos_dir(start_pos, dir_)
-        set_square(new_pos, False)  # It's possible that the new pos is now fully explored but disregard that
-        # set_square(new_pos, square_is_fully_explored(new_pos))
-        glob["pos"] = new_pos
-
     return moved
 
-
-# pathfind in memory, returns dict of directions
+# Breadth first pathfind in memory, returns dict of directions
 # For every found square, we put the reversed direction on it, and because of that we start from to_pos
 def pathfind_directions(from_pos, to_pos):
     square_directions = {to_pos: None}
@@ -157,6 +203,10 @@ def pathfind_directions(from_pos, to_pos):
                     continue
 
                 new_square = get_pos_dir(check_square, new_dir)
+
+                if new_square in square_directions:
+                    continue
+
                 opposite_dir = direction_opposite[new_dir]
                 next_round_squares.add(new_square)
                 square_directions[new_square] = opposite_dir
@@ -165,12 +215,14 @@ def pathfind_directions(from_pos, to_pos):
                 if new_square == from_pos:
                     return square_directions
 
-
 def pathfind(to_pos):
     pos = glob["pos"]
     square_directions = pathfind_directions(pos, to_pos)
 
     while pos != to_pos:
+        check_old_walls(pos)
+        # if check_old_walls(pos):
+        #     return pathfind(to_pos)
         dir_ = square_directions[pos]
         move(dir_)
         pos = get_pos_dir(pos, dir_)
@@ -178,6 +230,7 @@ def pathfind(to_pos):
 
 def reset_grid():
     glob["pos"] = get_pos()
+    glob["squares_with_walls"] = {}
     glob["squares"] = {}
     glob["squares"][glob["pos"]] = False
     glob["unexplored"] = [glob["pos"]]
@@ -197,8 +250,9 @@ def maze(laps):
         # 441558    97% faster      Pathfind to closest unexplored
         # 290644    52% faster      Disabled grid reset after every teleport which was forgotten when I was debugging edge case
         # 238163    22% faster      Disabled unnecessary check for if current pos was unexplored, it will never be
+        # 234431
 
-        glob["teleports"] = 10  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
+        glob["teleports"] = 299  # Max is 299
         glob["teleport_i"] = 0
         glob["treasure_pos"] = None
         glob["start_ops"] = get_op_count()
