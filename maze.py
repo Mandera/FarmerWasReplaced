@@ -52,10 +52,16 @@ def get_square(pos):
 def set_square(pos, value):
     glob["squares"][pos] = value
 
+    if value:
+        if pos in glob["unexplored"]:
+            glob["unexplored"].remove(pos)
+    else:
+        if pos not in glob["unexplored"]:
+            glob["unexplored"].append(pos)
+
 def measure_pos():
     x, y = measure()
     return x, y
-
 
 def fertilize_or_harvest_treasure():
     if glob["teleport_i"] == glob["teleports"]:
@@ -75,9 +81,6 @@ def check_treasure():
     if get_entity_type() == Entities.Treasure:
         return fertilize_or_harvest_treasure()
 
-
-
-
 # Return new unclamped pos
 def get_pos_dir(pos, dir_):
     i, value = direction_numbers[dir_]
@@ -85,18 +88,6 @@ def get_pos_dir(pos, dir_):
     pos2[i] = pos2[i] + value
     return pos2[0], pos2[1]
 
-# Return new clamped pos
-def get_pos_dir_contain(pos, dir_):
-    i, value = direction_numbers[dir_]
-    pos2 = list(pos)
-    pos2[i] = (pos2[i] + value) % size
-    return pos2[0], pos2[1]
-
-# def tracked_move(dir_):
-#     result = move(dir_)
-#     if result:
-#         glob["pos"] = get_pos_dir_contain(glob["pos"], dir_)
-#     return result
 
 def should_explore_dir_check(dir_):
     wall = get_wall(glob["pos"], dir_)
@@ -104,32 +95,43 @@ def should_explore_dir_check(dir_):
         return True  # Try unexplored
     if wall == OPEN:
         return False  # Already know it's open
+    return False  # WALL or OUTSIDE_WALL
 
-    # WALL or OUTSIDE_WALL
-    return False
+def try_explore_dir(pos, dir_):
+    if not should_explore_dir_check(dir_):
+        return False
+    moved = move(dir_)
+    if moved:
+        set_wall(pos, dir_, OPEN)
+    else:
+        set_wall(pos, dir_, glob["teleport_i"])
+    return moved
 
-def try_explore_dir(dir_):
-    if should_explore_dir_check(dir_):
-        if move(dir_):
-            set_wall(glob["pos"], dir_, OPEN)
-            glob["pos"] = get_pos_dir(glob["pos"], dir_)
-            set_square(glob["pos"], square_is_fully_explored(glob["pos"]))
-            return True
-        else:
-            set_wall(glob["pos"], dir_, glob["teleport_i"])
-    return False
 
 # Used when target has not been explored yet
 # Goal is to touch untouched squares
 # True if moved
 def explore_one_square():
+    moved = False
+    start_pos = glob["pos"]
     for dir_ in all_directions:
-        # Fully explored
-        if dir_ == last_dir:
-            set_square(glob["pos"], True)
+        if try_explore_dir(start_pos, dir_):
+            moved = True
+            break
 
-        if try_explore_dir(dir_):
-            return True
+    if dir_ == last_dir:  # Fully explored
+        set_square(start_pos, True)
+    else:
+        set_square(start_pos, False)
+
+    if moved:
+        new_pos = get_pos_dir(start_pos, dir_)
+        set_square(new_pos, False)  # It's possible that the new pos is now fully explored but disregard that
+        # set_square(new_pos, square_is_fully_explored(new_pos))
+        glob["pos"] = new_pos
+
+    return moved
+
 
 # Return a list of squares and dirs_ that we know are open to the given pos
 def open_squares_explored(pos):
@@ -183,44 +185,12 @@ def pathfind(to_pos):
         pos = get_pos_dir(pos, dir_)
     glob["pos"] = pos
 
-def square_is_fully_explored(pos):
-    for dir_ in all_directions:
-        if get_wall(pos, dir_) == None:
-            return False
-    return True
-
-def closest_unexplored_square():
-    checked_squares = {glob["pos"]}
-    check_squares = checked_squares
-    while True:
-        next_round_squares = set()
-
-        for check_square in check_squares:
-
-            # Get squares and dirs_ that we know are open to the given pos
-            for values in open_squares_explored(check_square):
-                new_square, dir_ = values
-
-                if check_square == new_square:
-                    continue
-
-                # Already checked
-                if new_square in checked_squares:
-                    continue
-
-                if get_square(new_square) == False:  # Not fully explored
-                    return new_square
-
-                checked_squares.add(new_square)
-                next_round_squares.add(new_square)
-        check_squares = next_round_squares
-
-
-
 def reset_grid():
     glob["pos"] = get_pos()
     glob["squares"] = {}
     glob["squares"][glob["pos"]] = False
+    glob["unexplored"] = [glob["pos"]]
+
     reset_walls()
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
@@ -249,18 +219,20 @@ def maze(laps):
         while True:
             # We can pathfind directly to treasure
             if glob["treasure_pos"] and get_square(glob["treasure_pos"]) != None:
+                # quick_print("go to treasure")
                 pathfind(glob["treasure_pos"])
                 if fertilize_or_harvest_treasure():
                     break
 
             # Keep exploring
             else:
+                # quick_print("explore")
                 moved = explore_one_square()
                 if moved:
                     if check_treasure():
                         break
                 else:
-                    pathfind(closest_unexplored_square())
+                    pathfind(glob["unexplored"][-1])
 
 
 
