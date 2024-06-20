@@ -32,6 +32,9 @@ OUTSIDE_WALL = "OUTSIDE_WALL"
 
 glob = {}
 
+clear()
+maze(10)
+
 
 while True:
     clear()
