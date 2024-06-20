@@ -56,22 +56,28 @@ def measure_pos():
     x, y = measure()
     return x, y
 
+
+def fertilize_or_harvest_treasure():
+    if glob["teleport_i"] == glob["teleports"]:
+        harvest()
+        glob["harvested"] = True
+        print("ops", get_op_count() - glob["start_ops"])
+    else:
+        treasure_pos = measure_pos()
+        while not use_item(Items.Fertilizer):
+            pass
+        glob["teleport_i"] += 1
+        if treasure_pos == glob["pos"]:
+            fertilize_or_harvest_treasure()
+        else:
+            glob["treasure_pos"] = treasure_pos
+
 def check_treasure():
-    do_measure = True
-    while get_entity_type() == Entities.Treasure:
-        if glob["teleport_i"] == glob["teleports"]:
-            harvest()
-            return True
+    if get_entity_type() == Entities.Treasure:
+        fertilize_or_harvest_treasure()
 
-        if do_measure:
-            glob["treasure_pos"] = measure_pos()
 
-            if glob["treasure_pos"] != glob["pos"]:
-                glob["teleport_i"] += 1
-                do_measure = False
-                # HERE ** Force edge case if we want by resetting squares and walls
-                # reset_grid()
-        use_item(Items.Fertilizer)
+
 
 # Return new unclamped pos
 def get_pos_dir(pos, dir_):
@@ -221,7 +227,6 @@ def reset_grid():
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
     for lap in range(laps):
-        start_ops = get_op_count()
         reset_grid()
 
         # Optimizing 10 teleports (random seed so will naturally vary tho)
@@ -233,39 +238,27 @@ def maze(laps):
 
         glob["teleports"] = 10  # Max is 299, but I think there's an edge case where it teleports to same square twice and will be undetectable
         glob["teleport_i"] = 0
-        glob["back_track"] = False
         glob["treasure_pos"] = None
+        glob["harvested"] = False
+        glob["start_ops"] = get_op_count()
 
         start_maze()
+        check_treasure()
 
-        while True:
-            harvested_treasure = check_treasure()
-            if harvested_treasure:
-                print("ops", get_op_count() - start_ops)
-                break
-
+        while not glob["harvested"]:
             # We can pathfind directly to treasure
             if glob["treasure_pos"] and get_square(glob["treasure_pos"]) != None:
                 pathfind(glob["treasure_pos"])
+                fertilize_or_harvest_treasure()
 
             # Keep exploring
             else:
                 moved = explore_one_square()
-                if not moved:
+                if moved:
+                    check_treasure()
+                else:
                     pathfind(closest_unexplored_square())
 
-            # make_move()
-
-            # if not glob["treasure_pos"]:
-            #     make_move()
-            #
-            # elif not glob["treasure_grid_pos"]:
-            #     make_move()
-            #
-            # else:
-            #     quick_print("treasure found and discovered")
-            #     while True:
-            #         do_a_flip()
 
 
 
