@@ -182,17 +182,19 @@ def explore_one_square():
 # Breadth first pathfind in memory, returns dict of directions
 # For every found square, we put the reversed direction on it, and because of that we start from to_pos
 def pathfind_directions(from_pos, to_pos):
-    square_directions = {to_pos: None}
-    next_round_squares = set()
-    while True:
-        if len(square_directions) == 1:
-            check_squares = {to_pos}
-        else:
-            check_squares = next_round_squares
+    square_directions = {from_pos: None}
+    check_squares = {from_pos}
 
+    while True:
         next_round_squares = set()
+
         for check_square in check_squares:
-            dir_ = square_directions[check_square]
+            if len(square_directions) > 1:
+                directions = square_directions[check_square]
+                dir_ = directions[-1]
+            else:
+                directions = ()
+                dir_ = None
 
             for new_dir in direction_explore[dir_]:
                 if get_wall(check_square, new_dir) != OPEN:
@@ -203,21 +205,21 @@ def pathfind_directions(from_pos, to_pos):
                 if new_square in square_directions:
                     continue
 
-                opposite_dir = direction_opposite[new_dir]
-                next_round_squares.add(new_square)
-                square_directions[new_square] = opposite_dir
+                square_directions[new_square] = directions + (new_dir, )
 
                 # Done
-                if new_square == from_pos:
-                    return square_directions
+                if new_square == to_pos:
+                    return square_directions[new_square]
+
+                next_round_squares.add(new_square)
+        check_squares = next_round_squares
 
 def pathfind(to_pos):
     pos = glob["pos"]
     square_directions = pathfind_directions(pos, to_pos)
 
-    while pos != to_pos:
+    for dir_ in square_directions:
         check_old_walls(pos)
-        dir_ = square_directions[pos]
         move(dir_)
         pos = get_pos_dir(pos, dir_)
     glob["pos"] = pos
@@ -246,7 +248,8 @@ def maze(laps):
         # 238163    22% faster      Disabled unnecessary check for if current pos was unexplored, it will never be
         # 234431
 
-        glob["teleports"] = 299  # Max is 299
+        glob["teleports"] = 10  # Max is 299
+        # glob["teleports"] = 299  # Max is 299
         glob["teleport_i"] = 0
         glob["treasure_pos"] = None
         glob["start_ops"] = get_op_count()
