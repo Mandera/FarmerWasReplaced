@@ -111,9 +111,8 @@ def try_explore_dir(pos, dir_):
         i = glob["teleport_i"]
         set_wall(pos, dir_, i)
 
-        i2 = TELEPORTS_UNTIL_RECHECK_WALL + i
-        glob["squares_with_walls"][pos] = i2
-        glob["squares_with_walls"][new_pos] = i2
+        glob["squares_with_walls"][pos] = True
+        glob["squares_with_walls"][new_pos] = True
     return moved, new_pos
 
 
@@ -126,10 +125,8 @@ def square_has_wall(pos):
 # Physically check all walls surrounding a square
 def check_old_walls(cur_pos):
     i = glob["teleport_i"]
-    if cur_pos not in glob["squares_with_walls"] or glob["squares_with_walls"][cur_pos] > i:
+    if cur_pos not in glob["squares_with_walls"]:
         return False
-
-    walls_gone = False
 
     for dir_ in all_directions:
         wall = get_wall(cur_pos, dir_)
@@ -150,7 +147,6 @@ def check_old_walls(cur_pos):
 
                 if not square_has_wall(cur_pos):
                     glob["squares_with_walls"].pop(cur_pos)
-                    walls_gone = True
                     break
             else:
                 set_wall(cur_pos, dir_, i)
@@ -159,8 +155,7 @@ def check_old_walls(cur_pos):
     # 4571124 with
     # 5166720 turned off print, oh, big variance
     # 5010265 = 20
-    if not walls_gone:
-        glob["squares_with_walls"][cur_pos] = i
+    # 4884228 turned off
 
 
 # Used when target has not been explored yet
@@ -219,13 +214,17 @@ def pathfind(to_pos):
     pos = glob["pos"]
     square_directions = pathfind_directions(pos, to_pos)
 
-    while pos != to_pos:
-        check_old_walls(pos)
-        # if check_old_walls(pos):
-        #     return pathfind(to_pos)
-        dir_ = square_directions[pos]
-        move(dir_)
-        pos = get_pos_dir(pos, dir_)
+    if glob["teleport_i"] < 10:
+        while pos != to_pos:
+            dir_ = square_directions[pos]
+            move(dir_)
+            pos = get_pos_dir(pos, dir_)
+    else:
+        while pos != to_pos:
+            check_old_walls(pos)
+            dir_ = square_directions[pos]
+            move(dir_)
+            pos = get_pos_dir(pos, dir_)
     glob["pos"] = pos
 
 def reset_grid():
