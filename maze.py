@@ -155,10 +155,6 @@ def check_old_walls(cur_pos):
             else:
                 set_wall(cur_pos, dir_, i)
 
-    # 4627240 without this
-    # 4571124 with
-    # 5166720 turned off print, oh, big variance
-    # 5010265 = 20
     if not walls_gone:
         glob["squares_with_walls"][cur_pos] = i
 
@@ -221,8 +217,6 @@ def pathfind(to_pos):
 
     while pos != to_pos:
         check_old_walls(pos)
-        # if check_old_walls(pos):
-        #     return pathfind(to_pos)
         dir_ = square_directions[pos]
         move(dir_)
         pos = get_pos_dir(pos, dir_)

@@ -30,7 +30,7 @@ direction_explore = {None: (North, East, South, West), North: (East, South, West
 OPEN = "open"
 OUTSIDE_WALL = "OUTSIDE_WALL"
 
-TELEPORTS_UNTIL_RECHECK_WALL = 20
+TELEPORTS_UNTIL_RECHECK_WALL = 10
 
 glob = {}
 
