@@ -68,9 +68,13 @@ def fertilize_or_harvest_treasure():
         harvest()
         print("ops", get_op_count() - glob["start_ops"])
         return True
+
     treasure_pos = measure_pos()
     while not use_item(Items.Fertilizer):
         pass
+
+    # reset_grid()  # Encourage edge case
+
     glob["teleport_i"] += 1
     if treasure_pos == glob["pos"]:
         return fertilize_or_harvest_treasure()
@@ -133,18 +137,6 @@ def explore_one_square():
     return moved
 
 
-# Return a list of squares and dirs_ that we know are open to the given pos
-def open_squares_explored(pos):
-    squares_and_dir = []
-    for dir_ in all_directions:
-        wall = get_wall(pos, dir_)
-        if wall != OPEN:
-            continue
-        target_square = get_pos_dir(pos, dir_)
-        squares_and_dir.append((target_square, dir_))
-    return squares_and_dir
-
-
 # pathfind in memory, returns dict of directions
 # For every found square, we put the reversed direction on it, and because of that we start from to_pos
 def pathfind_directions(from_pos, to_pos):
@@ -158,15 +150,14 @@ def pathfind_directions(from_pos, to_pos):
 
         next_round_squares = set()
         for check_square in check_squares:
-            for values in open_squares_explored(check_square):
-                new_square, dir_ = values
-                if check_square == new_square:
-                    continue
-                if new_square in square_directions:
+            dir_ = square_directions[check_square]
+
+            for new_dir in direction_explore[dir_]:
+                if get_wall(check_square, new_dir) != OPEN:
                     continue
 
-                # This is a new square
-                opposite_dir = direction_opposite[dir_]
+                new_square = get_pos_dir(check_square, new_dir)
+                opposite_dir = direction_opposite[new_dir]
                 next_round_squares.add(new_square)
                 square_directions[new_square] = opposite_dir
 

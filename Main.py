@@ -25,6 +25,7 @@ direction_opposite = {North: South, South: North, East: West, West: East}
 direction_prefix = {North: ("h", ), South: ("h", ), East: ("v", ), West: ("v", )}
 direction_wall_offset = {North: [1, 1], East: [0, 1]}
 num_to_str = {-1: "-1", 0: "0", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10"}
+direction_explore = {None: (North, East, South, West), North: (East, South, West), East: (South, West, North), South: (West, North, East), West: (North, East, South)}
 
 WALL = "wall"
 OPEN = "open"
