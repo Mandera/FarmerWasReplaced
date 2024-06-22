@@ -45,3 +45,20 @@ def goto(target):
             move_multi(direction_indexes[i][move_i], move_n)
 
 
+# Return new unclamped pos
+def get_pos_dir(pos, dir_):
+    i, value = direction_numbers[dir_]
+    pos2 = list(pos)
+    pos2[i] = pos2[i] + value
+    return pos2[0], pos2[1]
+
+
+def get_pos_dir_and_value(pos, dir_):
+    i, change = direction_numbers[dir_]
+    pos2 = list(pos)
+    new = pos2[i] + change
+    pos2[i] = new
+    return (pos2[0], pos2[1]), change, new
+
+
+

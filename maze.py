@@ -85,12 +85,6 @@ def check_treasure():
     if get_entity_type() == Entities.Treasure:
         return fertilize_or_harvest_treasure()
 
-# Return new unclamped pos
-def get_pos_dir(pos, dir_):
-    i, value = direction_numbers[dir_]
-    pos2 = list(pos)
-    pos2[i] = pos2[i] + value
-    return pos2[0], pos2[1]
 
 def should_explore_dir_check(dir_):
     wall = get_wall(glob["pos"], dir_)
