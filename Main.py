@@ -49,6 +49,28 @@ glob = {}
 # cactus(100)
 
 
+unlocks = [
+    Unlocks.Grass,  # Grass
+
+    Unlocks.Speed,  # Grass
+    Unlocks.Plant,  # Grass
+    Unlocks.Carrots,  # Wood
+    Unlocks.Trees,  # Wood, Carrots
+    Unlocks.Sunflowers,  # Carrots
+    Unlocks.Carrots,  # Gold
+    Unlocks.Dinosaurs,  # Cactus
+
+    Unlocks.Expand,  # Grass (And Unlocks.Speed)
+    Unlocks.Pumpkins,  # Wood, Carrots
+    Unlocks.Fertilizer,  # Pumpkins
+    Unlocks.Mazes,  # Carrots, Pumpkins
+
+    Unlocks.Polyculture,  # Grass, Wood, Carrots (And Unlocks.Pumpkins - Not used yet tho)
+
+    Unlocks.Leaderboard,  # Bones (And Unlocks.Pumpkins)
+]
+
+
 
 while True:
     clear()
