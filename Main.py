@@ -50,25 +50,38 @@ glob = {}
 
 
 unlocks = [
-    Unlocks.Grass,  # Grass
+    Unlocks.Grass,          # 1     Grass
 
-    Unlocks.Speed,  # Grass
-    Unlocks.Plant,  # Grass
-    Unlocks.Carrots,  # Wood
-    Unlocks.Trees,  # Wood, Carrots
-    Unlocks.Sunflowers,  # Carrots
-    Unlocks.Carrots,  # Gold
-    Unlocks.Dinosaurs,  # Cactus
+    Unlocks.Speed,          # 1     Grass
+    Unlocks.Plant,          # 1     Grass
+    Unlocks.Carrots,        # 2     Wood
+    Unlocks.Trees,          # 2     Wood, Carrots
+    Unlocks.Sunflowers,     #       Carrots
+    Unlocks.Cactus,         #       Gold
+    Unlocks.Dinosaurs,      #       Cactus
 
-    Unlocks.Expand,  # Grass (And Unlocks.Speed)
-    Unlocks.Pumpkins,  # Wood, Carrots
-    Unlocks.Fertilizer,  # Pumpkins
-    Unlocks.Mazes,  # Carrots, Pumpkins
+    Unlocks.Expand,         # 1     Grass (And Unlocks.Speed)
+    Unlocks.Pumpkins,       #       Wood, Carrots
+    Unlocks.Fertilizer,     #       Pumpkins
+    Unlocks.Mazes,          #       Carrots, Pumpkins
 
-    Unlocks.Polyculture,  # Grass, Wood, Carrots (And Unlocks.Pumpkins - Not used yet tho)
+    Unlocks.Polyculture,    #       Grass, Wood, Carrots (And Unlocks.Pumpkins - Not used yet tho)
 
-    Unlocks.Leaderboard,  # Bones (And Unlocks.Pumpkins)
+    Unlocks.Leaderboard,    #       Bones (And Unlocks.Pumpkins)
 ]
+
+
+# 1 - Grass
+#   Balance Grass, Speed, Expand
+#   End with Plant
+
+# 2 - Bushes
+#   Unlock Carrots
+#   Get enough for Trees
+
+# 3 - Carrots
+#
+
 
 
 
