@@ -30,19 +30,30 @@ def switch_cactus_and_follow(pos, new_pos, dir_, cactus_size, cactus_by_size):
 
 def move_cactus(target, cactus_by_size, cactus_size):
     pos = get_pos()
+
+    cactus_by_size[cactus_size].remove(pos)
+
     instructions = get_move_instructions_no_wrap(pos, target)
     for instruction in instructions:
         dir_, move_n = instruction
         for x in range(move_n):
             new_pos = get_pos_dir(pos, dir_)
-            switch_cactus_and_follow(pos, new_pos, dir_, cactus_size, cactus_by_size)
+            swap(dir_)
+            other_cactus_size = measure()
+
+            cactus_by_size[other_cactus_size].remove(new_pos)
+            cactus_by_size[other_cactus_size].append(pos)
+
+            move(dir_)
             pos = new_pos
+
 
 
 # 491115 start
 # 429488 first working iteration of moving deliberately
 # 431168 first attempt at improving
 # 404707 start with last index
+# 400401 remove moved cactus from dict right away
 
 
 # Start top right
@@ -81,7 +92,6 @@ def cactus(laps):
                 goto(positions[-1])
                 target = pos_from_index(done_cactus)
                 move_cactus(target, cactus_by_size, cactus_size)
-                positions.remove(target)
                 done_cactus += 1
 
         harvest()
