@@ -56,7 +56,7 @@ def get_move_instructions_no_wrap(pos, target):
         n1 = pos[i]
         n2 = target[i]
         if n1 != n2:
-            move_i, move_n = move_instructions_with_wrap(n1, n2)
+            move_i, move_n = move_instructions_no_wrap(n1, n2)
             dir_ = direction_indexes[i][move_i]
             instructions.append((dir_, move_n))
     return instructions
