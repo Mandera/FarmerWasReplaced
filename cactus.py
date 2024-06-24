@@ -14,20 +14,6 @@ def plant_cactus(cactus_by_size, dir_):
     move(dir_)
 
 
-def switch_cactus_and_follow(pos, new_pos, dir_, cactus_size, cactus_by_size):
-    swap(dir_)
-
-    other_cactus_size = measure()
-
-    cactus_by_size[cactus_size].remove(pos)
-    cactus_by_size[cactus_size].append(new_pos)
-    cactus_by_size[other_cactus_size].remove(new_pos)
-    cactus_by_size[other_cactus_size].append(pos)
-
-    move(dir_)
-    return new_pos
-
-
 def move_cactus(target, cactus_by_size, cactus_size):
     pos = get_pos()
 
@@ -90,7 +76,7 @@ def cactus(laps):
 
             for i2 in range(len(positions)):
                 goto(positions[-1])
-                target = pos_from_index(done_cactus)
+                target = pos_from_index(done_cactus)  # Possible improvement here, there are multiple target options
                 move_cactus(target, cactus_by_size, cactus_size)
                 done_cactus += 1
 
