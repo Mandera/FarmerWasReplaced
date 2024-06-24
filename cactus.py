@@ -40,6 +40,7 @@ def move_cactus(target, cactus_by_size, cactus_size):
 # 431168 first attempt at improving
 # 404707 start with last index
 # 400401 remove moved cactus from dict right away
+# 366215 best so far
 
 
 # Start top right
@@ -81,10 +82,7 @@ def cactus(laps):
                 done_cactus += 1
 
         harvest()
-
         print(get_op_count() - start)
-
-        exit()
 
 
 

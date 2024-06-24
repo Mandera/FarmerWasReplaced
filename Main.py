@@ -34,10 +34,20 @@ OUTSIDE_WALL = "OUTSIDE_WALL"
 
 TELEPORTS_UNTIL_RECHECK_WALL = 3
 
+
+dino_dirs = (
+    (North, West),
+    (North, East),
+    (South, West),
+    (South, East),
+)
+
+
 glob = {}
 
-clear()
-cactus(10)
+# clear()
+# cactus(100)
+
 
 
 while True:
@@ -69,5 +79,5 @@ while True:
     elif min_num == cactus_num:
         cactus(10)
     elif min_num == bones_num:
-        dinosaur(10)
+        dinosaur(2)
 
