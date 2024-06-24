@@ -1,5 +1,6 @@
 from cactus import cactus
 from carrot import carrots
+from dinosaurs import dinosaur
 from hay import hay
 from maze import maze
 from pumpkin import pumpkins
@@ -35,8 +36,8 @@ TELEPORTS_UNTIL_RECHECK_WALL = 3
 
 glob = {}
 
-# clear()
-# maze(10)
+clear()
+cactus(10)
 
 
 while True:
@@ -49,8 +50,9 @@ while True:
     pumpkins_num = num_items(Items.Pumpkin)
     gold_num = num_items(Items.Gold)
     cactus_num = num_items(Items.Cactus)
+    bones_num = num_items(Items.Bones)
 
-    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num, cactus_num)
+    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num, cactus_num, bones_num)
 
     if min_num == power_num:
         sunflowers(10)
@@ -66,4 +68,6 @@ while True:
         maze(10)
     elif min_num == cactus_num:
         cactus(10)
+    elif min_num == bones_num:
+        dinosaur(10)
 
