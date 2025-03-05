@@ -1,14 +1,5 @@
-from cactus import cactus
-from carrot import carrots
-from dinosaurs import dinosaur
-from hay import hay
-from maze import maze
-from pumpkin import pumpkins
-from tree import tree
-from helpers import *
-from sunflower import sunflowers
-from __builtins__ import *
 
+from __builtins__ import *
 
 
 size = get_world_size()
@@ -33,6 +24,7 @@ OPEN = "open"
 OUTSIDE_WALL = "OUTSIDE_WALL"
 
 TELEPORTS_UNTIL_RECHECK_WALL = 3
+
 
 
 dino_dirs = (
@@ -85,34 +77,34 @@ unlocks = [
 
 
 
-while True:
-    clear()
-
-    power_num = num_items(Items.Power)
-    hay_num = num_items(Items.Hay)
-    wood_num = num_items(Items.Wood)
-    carrots_num = num_items(Items.Carrot)
-    pumpkins_num = num_items(Items.Pumpkin)
-    gold_num = num_items(Items.Gold)
-    cactus_num = num_items(Items.Cactus)
-    bones_num = num_items(Items.Bones)
-
-    min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num, cactus_num, bones_num)
-
-    if min_num == power_num:
-        sunflowers(10)
-    elif min_num == hay_num:
-        hay(10)
-    elif min_num == wood_num:
-        tree(10)
-    elif min_num == carrots_num:
-        carrots(10)
-    elif min_num == pumpkins_num:
-        pumpkins(10)
-    elif min_num == gold_num:
-        maze(10)
-    elif min_num == cactus_num:
-        cactus(10)
-    elif min_num == bones_num:
-        dinosaur(2)
+# while True:
+#     clear()
+#
+#     power_num = num_items(Items.Power)
+#     hay_num = num_items(Items.Hay)
+#     wood_num = num_items(Items.Wood)
+#     carrots_num = num_items(Items.Carrot)
+#     pumpkins_num = num_items(Items.Pumpkin)
+#     gold_num = num_items(Items.Gold)
+#     cactus_num = num_items(Items.Cactus)
+#     bones_num = num_items(Items.Bones)
+#
+#     min_num = min(power_num, hay_num, wood_num, carrots_num, pumpkins_num, gold_num, cactus_num, bones_num)
+#
+#     if min_num == power_num:
+#         sunflowers(10)
+#     elif min_num == hay_num:
+#         hay(10)
+#     elif min_num == wood_num:
+#         tree(10)
+#     elif min_num == carrots_num:
+#         carrots(10)
+#     elif min_num == pumpkins_num:
+#         pumpkins(10)
+#     elif min_num == gold_num:
+#         maze(10)
+#     elif min_num == cactus_num:
+#         cactus(10)
+#     elif min_num == bones_num:
+#         dinosaur(2)
 

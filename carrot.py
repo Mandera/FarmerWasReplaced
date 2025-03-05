@@ -12,9 +12,9 @@ def carrots(laps, setup=True):
     for i in range(laps):
         for x in range(size):
             for y in range(size_min_1):
-                carrot_harvest(Entities.Carrots, East)
+                carrot_harvest(Entities.Carrot, East)
             if x:
-                carrot_harvest(Entities.Carrots, North)
+                carrot_harvest(Entities.Carrot, North)
             else:
                 carrot_harvest(Entities.Sunflower, North)
 

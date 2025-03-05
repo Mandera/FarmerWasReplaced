@@ -19,3 +19,10 @@ def hay(laps, setup=True):
             for y in range(size_min_1):
                 harvest()
                 move(East)
+
+
+if __name__ == "__main__":
+    hay(5)
+
+
+
