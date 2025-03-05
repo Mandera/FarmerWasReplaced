@@ -7,7 +7,7 @@ from pumpkin import pumpkins
 from tree import tree
 from helpers import *
 from sunflower import sunflowers
-from builtz.built import *
+from __builtins__ import *
 
 
 

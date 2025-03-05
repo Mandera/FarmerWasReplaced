@@ -65,7 +65,7 @@ def measure_pos():
 
 def fertilize_or_harvest_treasure():
     if glob["teleport_i"] == glob["teleports"]:
-        print("ops", get_op_count() - glob["start_ops"])
+        print("ops", get_tick_count() - glob["start_ops"])
         harvest()
         return True
 
@@ -229,7 +229,6 @@ def reset_grid():
 
 # Bug: If a wall disappears in unsearched squares_n it can get stuck
 def maze(laps):
-    buy_items(Items.Fertilizer, 10000)
 
     for lap in range(laps):
         reset_grid()
@@ -246,7 +245,7 @@ def maze(laps):
         # glob["teleports"] = 299  # Max is 299
         glob["teleport_i"] = 0
         glob["treasure_pos"] = None
-        glob["start_ops"] = get_op_count()
+        glob["start_ops"] = get_tick_count()
 
         start_maze()
         if check_treasure():

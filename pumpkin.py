@@ -1,7 +1,7 @@
 
 from Main import *
 from helpers import *
-from builtz.built import *
+from __builtins__ import *
 
 
 def pumpkin_harvest(direction, check_coords):
@@ -12,7 +12,6 @@ def pumpkin_harvest(direction, check_coords):
 
 
 def pumpkins(laps):
-    buy_items(Items.Pumpkin_Seed, squares_n * laps)
 
     for i in range(laps):
         for i2 in range(size):

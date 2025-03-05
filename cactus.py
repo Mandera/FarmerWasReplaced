@@ -3,7 +3,7 @@
 
 from Main import *
 from helpers import *
-from builtz.built import *
+from __builtins__ import *
 
 
 def plant_cactus(cactus_by_size, dir_):
@@ -51,10 +51,8 @@ def pos_from_index(index):
 
 
 def cactus(laps):
-    buy_items(Items.Cactus_Seed, squares_n * laps)
-
     for i in range(laps):
-        start = get_op_count()
+        start = get_tick_count()
         cactus_by_size = {}
         done_cactus = 0
 
@@ -82,7 +80,7 @@ def cactus(laps):
                 done_cactus += 1
 
         harvest()
-        print(get_op_count() - start)
+        print(get_tick_count() - start)
 
 
 

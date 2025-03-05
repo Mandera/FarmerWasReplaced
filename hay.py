@@ -1,5 +1,5 @@
 from Main import size, size_min_1
-from builtz.built import till, harvest, can_harvest, plant, Entities, use_item, Items, move, North, East
+from __builtins__ import *
 
 
 def hay(laps, setup=True):
@@ -14,7 +14,7 @@ def hay(laps, setup=True):
                     pass
                 harvest()
                 plant(Entities.Sunflower)
-                use_item(Items.Water_Tank)
+                use_item(Items.Water)
             move(North)
             for y in range(size_min_1):
                 harvest()

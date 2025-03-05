@@ -1,7 +1,7 @@
 
 from Main import *
 from helpers import *
-from builtz.built import *
+from __builtins__ import *
 
 
 
@@ -16,8 +16,6 @@ def sunflowers(laps, setup=True):
     replants = 1000
     water_limit = 0.75
     plants = (squares_n + replants) * laps
-    buy_items(Items.Sunflower_Seed, plants)
-    buy_items(Items.Fertilizer, plants)
 
     for i in range(laps):
         x = 0
@@ -28,7 +26,7 @@ def sunflowers(laps, setup=True):
                     till()
                 plant(Entities.Sunflower)
                 while get_water() < water_limit:
-                    use_item(Items.Water_Tank)
+                    use_item(Items.Water)
                 store_petals(dict_, x, y, measure())
                 move(East)
                 x = (x + 1) % size
@@ -36,7 +34,7 @@ def sunflowers(laps, setup=True):
                 till()
             plant(Entities.Sunflower)
             while get_water() < water_limit:
-                use_item(Items.Water_Tank)
+                use_item(Items.Water)
             store_petals(dict_, x, y, measure())
             move(North)
             y = (y + 1) % size
@@ -54,7 +52,7 @@ def sunflowers(laps, setup=True):
                 if not can_harvest():
                     use_item(Items.Fertilizer)
                     for i2 in range(4):
-                        use_item(Items.Water_Tank)
+                        use_item(Items.Water)
                 harvest()
 
                 if n < replants:

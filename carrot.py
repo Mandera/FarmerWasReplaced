@@ -9,7 +9,6 @@ def carrots(laps, setup=True):
             till()
             move(North)
 
-    buy_items(Items.Carrot_Seed, squares_n * laps)
     for i in range(laps):
         for x in range(size):
             for y in range(size_min_1):
@@ -26,8 +25,10 @@ def carrots(laps, setup=True):
 def carrot_harvest(seed, direction):
     harvest()
     plant(seed)
-    use_item(Items.Water_Tank)
+    use_item(Items.Water)
     move(direction)
 
-from builtz.built import *
+
+from __builtins__ import *
 from Main import *
+

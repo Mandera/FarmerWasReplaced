@@ -1,4 +1,6 @@
 
+
+from __builtins__ import *
 from Main import *
 
 
@@ -7,10 +9,6 @@ def bool_to_int(boolean):
         return 1
     return 0
 
-def buy_items(item, target):
-    current = num_items(item)
-    if current < target:
-        trade(item, target - current)
 
 def get_pos():
     return get_pos_x(), get_pos_y()

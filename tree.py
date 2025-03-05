@@ -1,6 +1,6 @@
 
 from Main import *
-from builtz.built import *
+from __builtins__ import *
 
 
 def do_tree(i, direction):
@@ -9,7 +9,7 @@ def do_tree(i, direction):
     else:
         till()
     plant(Entities.Tree)
-    use_item(Items.Water_Tank)
+    use_item(Items.Water)
     move(East)
     move(direction)
 

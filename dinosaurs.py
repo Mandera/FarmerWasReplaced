@@ -1,9 +1,12 @@
+
+# Update: uhh seems to be changed, can remove all this I think
+
 # Much room for improvement but this works
 # Could do more in memory
 
 from Main import *
 from helpers import *
-from builtz.built import *
+from __builtins__ import *
 
 
 
@@ -22,13 +25,12 @@ def move_dino():
 
 
 def dinosaur(laps):
-    buy_items(Items.Egg, squares_n * laps)
 
     # Till and plant
     for i2 in range(size):
         for i3 in range(size_min_1):
             till()
-            use_item(Items.Egg)
+            use_item(Items)
             move(East)
         till()
         use_item(Items.Egg)
