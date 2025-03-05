@@ -1,3 +1,6 @@
+""" Working but had to disable watering, doesn't take water inventory into account """
+
+
 
 from Main import *
 from helpers import *
@@ -11,7 +14,7 @@ def store_petals(dict_, x, y, petals):
     dict_[petals].append((x, y))
 
 
-def sunflowers(laps, setup=True):
+def sunflower(laps, setup=True):
     dict_ = {}
     replants = 1000
     water_limit = 0.75
@@ -25,16 +28,16 @@ def sunflowers(laps, setup=True):
                 if not i:
                     till()
                 plant(Entities.Sunflower)
-                while get_water() < water_limit:
-                    use_item(Items.Water)
+                # while get_water() < water_limit:
+                #     use_item(Items.Water)
                 store_petals(dict_, x, y, measure())
                 move(East)
                 x = (x + 1) % size
             if not i:
                 till()
             plant(Entities.Sunflower)
-            while get_water() < water_limit:
-                use_item(Items.Water)
+            # while get_water() < water_limit:
+            #     use_item(Items.Water)
             store_petals(dict_, x, y, measure())
             move(North)
             y = (y + 1) % size
@@ -51,8 +54,8 @@ def sunflowers(laps, setup=True):
                 goto(coords)
                 if not can_harvest():
                     use_item(Items.Fertilizer)
-                    for i2 in range(4):
-                        use_item(Items.Water)
+                    # for i2 in range(4):
+                    #     use_item(Items.Water)
                 harvest()
 
                 if n < replants:
