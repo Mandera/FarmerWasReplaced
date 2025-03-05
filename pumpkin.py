@@ -11,7 +11,7 @@ def pumpkin_harvest(direction, check_coords):
     move(direction)
 
 
-def pumpkins(laps):
+def pumpkin(laps):
 
     for i in range(laps):
         for i2 in range(size):
@@ -25,9 +25,9 @@ def pumpkins(laps):
             plant(Entities.Pumpkin)
             move(North)
 
-        do_a_flip()
-        do_a_flip()
-        do_a_flip()
+        # do_a_flip()
+        # do_a_flip()
+        # do_a_flip()
 
         check_coords = []
         for i2 in range(size):
@@ -46,9 +46,9 @@ def pumpkins(laps):
                     break
 
 
-        do_a_flip()
-        do_a_flip()
-        do_a_flip()
+        # do_a_flip()
+        # do_a_flip()
+        # do_a_flip()
 
         harvest()
 
