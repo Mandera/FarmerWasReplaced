@@ -1,7 +1,6 @@
 from __builtins__ import *
 
 
-# from carrot import carrots
 # from dinosaurs import dinosaur
 # from maze import maze
 # from pumpkin import pumpkins
@@ -11,9 +10,10 @@ from __builtins__ import *
 
 from hay import hay
 from cactus import cactus
+from carrot import carrot
 
 
 clear()
 
-cactus(5)
+carrot(5)
 

@@ -1,6 +1,9 @@
 
+from __builtins__ import *
+from Main import *
 
-def carrots(laps, setup=True):
+
+def carrot(laps, setup=True):
     if setup:
         for x in range(size):
             for y in range(size_min_1):
@@ -29,6 +32,4 @@ def carrot_harvest(seed, direction):
     move(direction)
 
 
-from __builtins__ import *
-from Main import *
 
