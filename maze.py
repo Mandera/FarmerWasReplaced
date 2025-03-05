@@ -1,6 +1,7 @@
 
-
 from Main import *
+from helpers import *
+from __builtins__ import *
 
 
 # This will be True, avoid it
@@ -10,7 +11,7 @@ from Main import *
 
 def start_maze():
     plant(Entities.Bush)
-    while get_entity_type() == Entities.Bush:
+    while get_entity_type() == Entities.Bush:  # HERE ** seems you dont do this anymore
         use_item(Items.Fertilizer)
 
 def reset_walls():
