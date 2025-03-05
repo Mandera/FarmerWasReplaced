@@ -1,4 +1,6 @@
-# from cactus import *
+from __builtins__ import *
+
+
 # from carrot import carrots
 # from dinosaurs import dinosaur
 # from maze import maze
@@ -8,8 +10,10 @@
 # from sunflower import sunflowers
 
 from hay import hay
+from cactus import cactus
 
 
+clear()
 
-hay(5)
+cactus(5)
 

@@ -1,7 +1,6 @@
 
 
-from __builtins__ import *
-from Main import *
+
 
 
 def bool_to_int(boolean):
@@ -81,4 +80,7 @@ def get_pos_dir_and_value(pos, dir_):
     return (pos2[0], pos2[1]), change, new
 
 
+
+from __builtins__ import *
+from Main import *
 

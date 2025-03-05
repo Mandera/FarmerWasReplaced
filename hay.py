@@ -21,8 +21,6 @@ def hay(laps, setup=True):
                 move(East)
 
 
-if __name__ == "__main__":
-    hay(5)
 
 
 
