@@ -13,5 +13,5 @@ from maze import maze
 
 clear()
 
-maze(5)
+maze(5, 20)
 

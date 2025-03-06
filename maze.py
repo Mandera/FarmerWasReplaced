@@ -9,10 +9,10 @@ from __builtins__ import *
 # 1 == True
 
 
-def start_maze():
+def start_maze(amount):
     plant(Entities.Bush)
     while get_entity_type() == Entities.Bush:  # HERE ** seems you dont do this anymore
-        use_item(Items.Fertilizer)
+        use_item(Items.Weird_Substance, amount)
 
 def reset_walls():
     glob["walls"] = {}
@@ -64,27 +64,27 @@ def measure_pos():
     x, y = measure()
     return x, y
 
-def fertilize_or_harvest_treasure():
+def fertilize_or_harvest_treasure(amount):
     if glob["teleport_i"] == glob["teleports"]:
         print("ops", get_tick_count() - glob["start_ops"])
         harvest()
         return True
 
     treasure_pos = measure_pos()
-    while not use_item(Items.Fertilizer):
+    while not use_item(Items.Weird_Substance, amount):
         pass
 
     # reset_grid()  # Encourage edge case
 
     glob["teleport_i"] += 1
     if treasure_pos == glob["pos"]:
-        return fertilize_or_harvest_treasure()
+        return fertilize_or_harvest_treasure(amount)
     else:
         glob["treasure_pos"] = treasure_pos
 
-def check_treasure():
+def check_treasure(amount):
     if get_entity_type() == Entities.Treasure:
-        return fertilize_or_harvest_treasure()
+        return fertilize_or_harvest_treasure(amount)
 
 
 def should_explore_dir_check(dir_):
@@ -228,9 +228,9 @@ def reset_grid():
 
     reset_walls()
 
-# Bug: If a wall disappears in unsearched squares_n it can get stuck
-def maze(laps):
 
+# Bug: If a wall disappears in unsearched squares_n it can get stuck
+def maze(laps, amount):
     for lap in range(laps):
         reset_grid()
 
@@ -248,8 +248,8 @@ def maze(laps):
         glob["treasure_pos"] = None
         glob["start_ops"] = get_tick_count()
 
-        start_maze()
-        if check_treasure():
+        start_maze(amount)
+        if check_treasure(amount):
             continue
 
         while True:
@@ -257,7 +257,7 @@ def maze(laps):
             if glob["treasure_pos"] and get_square(glob["treasure_pos"]) != None:
                 # quick_print("go to treasure")
                 pathfind(glob["treasure_pos"])
-                if fertilize_or_harvest_treasure():
+                if fertilize_or_harvest_treasure(amount):
                     break
 
             # Keep exploring
@@ -265,7 +265,7 @@ def maze(laps):
                 # quick_print("explore")
                 moved = explore_one_square()
                 if moved:
-                    if check_treasure():
+                    if check_treasure(amount):
                         break
                 else:
                     pathfind(glob["unexplored"][-1])
